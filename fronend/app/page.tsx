@@ -18,7 +18,7 @@ export default function Page() {
         <h1
           className={`${instrumentSerif.className} text-white text-center text-balance font-normal tracking-tight text-7xl`}
         >
-          imagination is limit
+          Url Shortner
         </h1>
         <div className="mt-10">
           <UrlShortener />
