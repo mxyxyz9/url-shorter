@@ -1,6 +1,7 @@
 import { GradientBackground } from "@/components/gradient-background"
 import { Instrument_Serif } from "next/font/google"
 import { UrlShortener } from "@/components/url-shortener"
+import { Footer } from "@/components/footer"
 
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function Page() {
           <UrlShortener />
         </div>
       </section>
+      <Footer />
     </main>
   )
 }
