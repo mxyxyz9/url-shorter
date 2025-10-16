@@ -5,9 +5,8 @@ import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Instrument_Serif } from "next/font/google"
 import { Suspense } from "react"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
 import "./globals.css"
+import { Header } from "@/components/header"
 
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
@@ -32,7 +31,6 @@ export default function RootLayout({
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <Header />
         <Suspense fallback={null}>{children}</Suspense>
-        <Footer />
         <Analytics />
       </body>
     </html>
