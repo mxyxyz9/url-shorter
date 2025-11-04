@@ -47,20 +47,20 @@ export function Footer() {
   ];
 
   return (
-    <footer className="w-full bg-gradient-to-b from-transparent to-black/90 backdrop-blur-xl border-t border-white/10">
+    <footer className="w-full bg-black backdrop-blur-xl border-t border-white/10">
       <div className="container mx-auto px-4 py-16">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center border border-gray-700">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                 </svg>
               </div>
               <div>
-                <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                <h3 className="text-2xl font-bold text-white">
                   ShortLink
                 </h3>
                 <p className="text-sm text-gray-400">Premium URL Shortening</p>

@@ -91,7 +91,7 @@ export function UrlShortener() {
             <Button 
               onClick={handleShorten} 
               disabled={isLoading}
-              className="h-16 rounded-r-2xl px-8 text-lg font-semibold shrink-0 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 transition-all duration-200"
+              className="h-16 rounded-r-2xl px-8 text-lg font-semibold shrink-0 bg-black hover:bg-gray-800 disabled:opacity-50 transition-all duration-200 border border-gray-700"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -122,7 +122,7 @@ export function UrlShortener() {
             <Button
               variant="secondary"
               onClick={handleCopy}
-              className="h-16 rounded-r-2xl px-8 text-lg font-semibold shrink-0 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white transition-all duration-200"
+              className="h-16 rounded-r-2xl px-8 text-lg font-semibold shrink-0 bg-black hover:bg-gray-800 text-white transition-all duration-200 border border-gray-700"
             >
               {copied ? (
                 <Check className="w-5 h-5" />
