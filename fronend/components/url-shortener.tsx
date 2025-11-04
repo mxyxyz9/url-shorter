@@ -4,15 +4,18 @@ import * as React from "react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { LoadingSpinner } from '@/components/loading-spinner'
+import { Loader2, Link2, Copy, Check } from "lucide-react"
 
 export function UrlShortener() {
   const [url, setUrl] = React.useState("")
   const [shortUrl, setShortUrl] = React.useState("")
   const [copied, setCopied] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [error, setError] = React.useState("")
 
   function isValidUrl(value: string) {
     try {
-      // Allow missing protocol by trying to prepend https://
       const test = value.match(/^https?:\/\//i) ? value : `https://${value}`
       new URL(test)
       return true
@@ -21,17 +24,30 @@ export function UrlShortener() {
     }
   }
 
-  function handleShorten() {
-    if (!url || !isValidUrl(url)) {
-      // Basic guard: ignore invalid input
+  async function handleShorten() {
+    setError("")
+    
+    if (!url.trim()) {
+      setError("Please enter a URL")
       return
     }
+    
+    if (!isValidUrl(url)) {
+      setError("Please enter a valid URL")
+      return
+    }
+    
+    setIsLoading(true)
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
     const base = typeof window !== "undefined" ? window.location.origin : "https://example.com"
     const slug = Math.random().toString(36).slice(2, 8)
     const normalized = url.match(/^https?:\/\//i) ? url : `https://${url}`
-    // In a real app, you would POST normalized to an API and get a slug back.
     setShortUrl(`${base}/${slug}`)
     setCopied(false)
+    setIsLoading(false)
   }
 
   async function handleCopy() {
@@ -39,55 +55,93 @@ export function UrlShortener() {
     try {
       await navigator.clipboard.writeText(shortUrl)
       setCopied(true)
-      const id = setTimeout(() => setCopied(false), 1500)
+      const id = setTimeout(() => setCopied(false), 2000)
       return () => clearTimeout(id)
     } catch {
-      // ignore copy errors
+      setError("Failed to copy to clipboard")
     }
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto grid gap-4">
-      {/* Box 1: Input URL + Shorten button */}
-      <Card className="rounded-full p-0 border-0 bg-transparent shadow-none text-foreground">
-        <div className="flex items-center w-full overflow-hidden rounded-full bg-background/30 backdrop-blur-xl">
-          <Input
-            placeholder="Paste link here"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="flex-1 h-14 bg-transparent border-0 px-5 text-foreground placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
-            aria-label="Paste the link to shorten"
-            inputMode="url"
-            autoComplete="off"
-          />
-          <Button onClick={handleShorten} className="h-14 rounded-full px-6 text-base font-medium shrink-0">
-            Shorten
-            <span className="sr-only">Shorten link</span>
-          </Button>
-        </div>
-      </Card>
+    <div className="w-full max-w-3xl mx-auto space-y-6">
+      {/* Input URL + Shorten button */}
+      <div className="relative">
+        <Card className="rounded-2xl p-0 border-0 bg-white/10 backdrop-blur-xl shadow-2xl shadow-black/20 text-foreground overflow-hidden">
+          <div className="flex items-center w-full">
+            <div className="flex-1 relative">
+              <Link2 className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Input
+                placeholder="Paste your long URL here..."
+                value={url}
+                onChange={(e) => {
+                  setUrl(e.target.value)
+                  setError("")
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleShorten()
+                  }
+                }}
+                className="flex-1 h-16 bg-transparent border-0 pl-12 pr-5 text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 text-lg"
+                aria-label="Paste the link to shorten"
+                inputMode="url"
+                autoComplete="off"
+              />
+            </div>
+            <Button 
+              onClick={handleShorten} 
+              disabled={isLoading}
+              className="h-16 rounded-r-2xl px-8 text-lg font-semibold shrink-0 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 transition-all duration-200"
+            >
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                "Shorten"
+              )}
+              <span className="sr-only">Shorten link</span>
+            </Button>
+          </div>
+        </Card>
+        
+        {error && (
+          <p className="text-red-400 text-sm mt-2 ml-2 animate-pulse">{error}</p>
+        )}
+      </div>
 
-      {/* Box 2: Short link + Copy button */}
-      <Card className="rounded-full p-0 border-0 bg-transparent shadow-none text-foreground">
-        <div className="flex items-center w-full overflow-hidden rounded-full bg-background/30 backdrop-blur-xl">
-          <Input
-            readOnly
-            value={shortUrl || ""}
-            placeholder="Shortened link will appear here"
-            className="flex-1 h-14 bg-transparent border-0 px-5 text-foreground placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
-            aria-label="Shortened link"
-          />
-          <Button
-            variant="secondary"
-            onClick={handleCopy}
-            disabled={!shortUrl}
-            className="h-14 rounded-full px-6 text-base font-medium shrink-0 disabled:opacity-50"
-          >
-            {copied ? "Copied" : "Copy"}
-            <span className="sr-only">Copy shortened link</span>
-          </Button>
+      {/* Short link + Copy button */}
+      {shortUrl && (
+        <Card className="rounded-2xl p-0 border-0 bg-white/10 backdrop-blur-xl shadow-2xl shadow-black/20 text-foreground overflow-hidden animate-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center w-full">
+            <Input
+              readOnly
+              value={shortUrl}
+              placeholder="Your shortened URL will appear here"
+              className="flex-1 h-16 bg-transparent border-0 px-5 text-white focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-mono"
+              aria-label="Shortened link"
+            />
+            <Button
+              variant="secondary"
+              onClick={handleCopy}
+              className="h-16 rounded-r-2xl px-8 text-lg font-semibold shrink-0 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white transition-all duration-200"
+            >
+              {copied ? (
+                <Check className="w-5 h-5" />
+              ) : (
+                <Copy className="w-5 h-5" />
+              )}
+              <span className="ml-2">{copied ? "Copied!" : "Copy"}</span>
+              <span className="sr-only">Copy shortened link</span>
+            </Button>
+          </div>
+        </Card>
+      )}
+      
+      {/* Success message */}
+      {shortUrl && (
+        <div className="text-center animate-in fade-in duration-500">
+          <p className="text-green-400 text-lg font-medium">✨ Your URL has been shortened successfully!</p>
         </div>
-      </Card>
+      )}
     </div>
   )
 }

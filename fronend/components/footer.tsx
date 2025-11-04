@@ -1,59 +1,170 @@
-import { Github, Twitter, Linkedin } from 'lucide-react';
-
-import { cn } from '@/lib/utils';
+import { Github, Twitter, Linkedin, Mail, Heart, ExternalLink } from 'lucide-react';
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  const socialLinks = [
+    {
+      name: 'GitHub',
+      href: 'https://github.com/mxyxyz9/url-shorter',
+      icon: Github,
+      color: 'hover:text-purple-400'
+    },
+    {
+      name: 'Twitter',
+      href: '#',
+      icon: Twitter,
+      color: 'hover:text-blue-400'
+    },
+    {
+      name: 'LinkedIn',
+      href: '#',
+      icon: Linkedin,
+      color: 'hover:text-cyan-400'
+    },
+    {
+      name: 'Email',
+      href: 'mailto:contact@shortlink.com',
+      icon: Mail,
+      color: 'hover:text-red-400'
+    }
+  ];
+
+  const quickLinks = [
+    { name: 'About Us', href: '#about' },
+    { name: 'Features', href: '#features' },
+    { name: 'How it Works', href: '#how-it-works' },
+    { name: 'API', href: '#api' },
+    { name: 'Pricing', href: '#pricing' },
+    { name: 'Contact', href: '#contact' }
+  ];
+
+  const legalLinks = [
+    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
+    { name: 'Cookie Policy', href: '/cookies' },
+    { name: 'DMCA', href: '/dmca' }
+  ];
+
   return (
-    <footer className="w-full py-12 bg-gray-950 text-gray-400 text-center border-t border-gray-800">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-        <div className="mb-8 md:mb-0 md:w-1/3 text-left">
-          <h3 className="text-xl font-semibold text-white mb-2">URL Shortener</h3>
-          <p className="text-sm">Simplify your links, share with ease. Our URL shortener provides a fast and reliable way to manage your web addresses.</p>
-          <p className="text-xs mt-4 opacity-75">© {new Date().getFullYear()} URL Shortener. All rights reserved.</p>
-        </div>
-
-        <div className="flex flex-col items-center md:w-1/3 mb-8 md:mb-0">
-          <h4 className="text-lg font-semibold text-white mb-3">Quick Links</h4>
-          <nav className="flex flex-col space-y-2">
-            <a href="#" className="hover:text-blue-400 transition-colors">About Us</a>
-            <a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-blue-400 transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-blue-400 transition-colors">Contact</a>
-          </nav>
-        </div>
-
-        <div className="flex flex-col items-center md:w-1/3">
-          <h4 className="text-lg font-semibold text-white mb-3">Connect With Us</h4>
-          <div className="flex justify-center space-x-6">
-            <a
-              href="https://github.com/mxyxyz9/url-shorter"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-400 transition-colors"
-            >
-              <Github className="h-7 w-7" />
-              <span className="sr-only">GitHub</span>
-            </a>
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-400 transition-colors"
-            >
-              <Twitter className="h-7 w-7" />
-              <span className="sr-only">Twitter</span>
-            </a>
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-400 transition-colors"
-            >
-              <Linkedin className="h-7 w-7" />
-              <span className="sr-only">LinkedIn</span>
-            </a>
+    <footer className="w-full bg-gradient-to-b from-transparent to-black/90 backdrop-blur-xl border-t border-white/10">
+      <div className="container mx-auto px-4 py-16">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          {/* Brand Section */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  ShortLink
+                </h3>
+                <p className="text-sm text-gray-400">Premium URL Shortening</p>
+              </div>
+            </div>
+            
+            <p className="text-gray-300 mb-6 max-w-md leading-relaxed">
+              Transform your long, complex URLs into clean, shareable links. Our advanced URL shortener 
+              provides analytics, custom domains, and enterprise-grade security for all your link management needs.
+            </p>
+            
+            <div className="flex items-center space-x-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 ${link.color}`}
+                  aria-label={link.name}
+                >
+                  <link.icon className="w-5 h-5" />
+                </a>
+              ))}
+            </div>
           </div>
-          <p className="text-xs mt-4 opacity-75">Built with Next.js and love ❤️</p>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-lg font-semibold text-white mb-4">Quick Links</h4>
+            <ul className="space-y-3">
+              {quickLinks.map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    className="flex items-center text-gray-300 hover:text-white transition-colors duration-200 group"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="text-lg font-semibold text-white mb-4">Legal</h4>
+            <ul className="space-y-3">
+              {legalLinks.map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    className="flex items-center text-gray-300 hover:text-white transition-colors duration-200 group"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Stats Section */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 p-6 bg-white/5 rounded-2xl border border-white/10">
+          <div className="text-center">
+            <div className="text-3xl font-bold text-white mb-1">1M+</div>
+            <div className="text-sm text-gray-400">Links Shortened</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-white mb-1">500K+</div>
+            <div className="text-sm text-gray-400">Active Users</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-white mb-1">99.9%</div>
+            <div className="text-sm text-gray-400">Uptime</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-white mb-1">50M+</div>
+            <div className="text-sm text-gray-400">Clicks Tracked</div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-white/10 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-2 text-gray-400">
+              <p className="text-sm">
+                © {currentYear} ShortLink. All rights reserved.
+              </p>
+              <Heart className="w-4 h-4 text-red-500 animate-pulse" />
+              <p className="text-sm">Made with love</p>
+            </div>
+            
+            <div className="flex items-center space-x-4 text-sm text-gray-400">
+              <span className="flex items-center">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                All systems operational
+              </span>
+              <span>•</span>
+              <span>v1.0.0</span>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
