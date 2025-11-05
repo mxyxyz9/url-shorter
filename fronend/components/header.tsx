@@ -22,13 +22,13 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200 border border-gray-700">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
               </svg>
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-white">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                 ShortLink
               </h1>
               <p className="text-xs text-gray-400">URL Shortener</p>
@@ -53,7 +53,7 @@ export function Header() {
             <Button variant="ghost" className="text-gray-300 hover:text-white hover:bg-white/10">
               <Link href="/login">Sign In</Link>
             </Button>
-            <Button asChild className="bg-black hover:bg-gray-800 text-white font-semibold rounded-xl border border-gray-700">
+            <Button asChild className="bg-black hover:bg-gray-900 text-white font-semibold rounded-xl border border-gray-700">
               <Link href="/signup">Get Started Free</Link>
             </Button>
           </div>
@@ -85,7 +85,7 @@ export function Header() {
                 <Button variant="ghost" className="w-full text-gray-300 hover:text-white hover:bg-white/10 justify-start">
                   <Link href="/login">Sign In</Link>
                 </Button>
-                <Button asChild className="w-full bg-black hover:bg-gray-800 text-white font-semibold rounded-xl justify-start border border-gray-700">
+                <Button asChild className="w-full bg-black hover:bg-gray-900 text-white font-semibold rounded-xl border border-gray-700 justify-start">
                   <Link href="/signup">Get Started Free</Link>
                 </Button>
               </div>
