@@ -16,6 +16,9 @@ export function Header() {
   const [isMounted, setIsMounted] = useState(false);
   const [time, setTime] = useState(new Date());
   const [parallaxOffset, setParallaxOffset] = useState(0);
+  const [mouseTrail, setMouseTrail] = useState<Array<{x: number, y: number, id: number}>>([]);
+  const [isHoveringLogo, setIsHoveringLogo] = useState(false);
+  const [rippleEffect, setRippleEffect] = useState<Array<{x: number, y: number, id: number}>>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,6 +30,12 @@ export function Header() {
 
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
+      
+      // Add mouse trail effect
+      setMouseTrail(prev => {
+        const newTrail = [...prev, { x: e.clientX, y: e.clientY, id: Date.now() }];
+        return newTrail.slice(-10); // Keep only last 10 positions
+      });
     };
 
     const timer = setInterval(() => {
@@ -97,6 +106,27 @@ export function Header() {
           0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
           50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.8), 0 0 60px rgba(147, 51, 234, 0.5); }
         }
+        @keyframes trail {
+          0% { opacity: 1; transform: scale(1); }
+          100% { opacity: 0; transform: scale(0.5); }
+        }
+        @keyframes ripple {
+          0% { transform: scale(0); opacity: 1; }
+          100% { transform: scale(4); opacity: 0; }
+        }
+        @keyframes hologram {
+          0% { transform: rotateY(0deg); }
+          100% { transform: rotateY(360deg); }
+        }
+        @keyframes energy-wave {
+          0% { transform: scaleX(0); opacity: 1; }
+          50% { opacity: 0.5; }
+          100% { transform: scaleX(1); opacity: 0; }
+        }
+        @keyframes matrix {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100vh); }
+        }
         .animate-shimmer-fast {
           animation: shimmer-fast 0.8s ease-in-out;
         }
@@ -106,9 +136,12 @@ export function Header() {
       } relative overflow-hidden ${isMounted ? 'animate-slide-in-top' : ''}`} style={{ transform: `translateY(${parallaxOffset}px)` }}>
       
       {/* Scroll Progress Bar */}
-      <div 
-        className="absolute top-0 left-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-300 z-50"
+      <div className="absolute top-0 left-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-300 z-50"
         style={{ width: `${scrollProgress}%` }}
+      />
+      {/* Energy wave effect */}
+      <div className="absolute top-0 left-0 h-1 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 opacity-70 animate-energy-wave origin-left"
+        style={{ width: '100%', animationDelay: `${scrollProgress * 0.01}s` }}
       />
       {/* Interactive Background Effect */}
       <div 
@@ -146,12 +179,73 @@ export function Header() {
             }}
           />
         ))}
+        {/* Matrix rain effect */}
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={`matrix-${i}`}
+            className="absolute text-green-400 text-xs font-mono opacity-30 animate-matrix"
+            style={{
+              left: `${(i * 6.66)}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 2}s`
+            }}
+          >
+            {Math.random().toString(2).substr(2, 8)}
+          </div>
+        ))}
+      </div>
+      
+      {/* Mouse Trail Effect */}
+      <div className="fixed inset-0 pointer-events-none z-40">
+        {mouseTrail.map((trail, index) => (
+          <div
+            key={trail.id}
+            className="absolute w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-60"
+            style={{
+              left: trail.x - 6,
+              top: trail.y - 6,
+              animation: 'trail 1s ease-out forwards',
+              animationDelay: `${index * 0.1}s`
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Ripple Effects */}
+      <div className="fixed inset-0 pointer-events-none z-30">
+        {rippleEffect.map((ripple) => (
+          <div
+            key={ripple.id}
+            className="absolute border-2 border-blue-400 rounded-full"
+            style={{
+              left: ripple.x - 25,
+              top: ripple.y - 25,
+              width: 50,
+              height: 50,
+              animation: 'ripple 1s ease-out forwards'
+            }}
+          />
+        ))}
       </div>
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group relative">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 transform group-hover:rotate-6 shadow-lg group-hover:shadow-blue-500/25 animate-pulse-glow relative overflow-hidden animate-float-3d" style={{ animationDuration: '3s' }}>
+          <Link href="/" className="flex items-center gap-3 group relative" 
+            onMouseEnter={() => setIsHoveringLogo(true)}
+            onMouseLeave={() => setIsHoveringLogo(false)}
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setRippleEffect(prev => [...prev, {
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2,
+                id: Date.now()
+              }]);
+              setTimeout(() => {
+                setRippleEffect(prev => prev.slice(1));
+              }, 1000);
+            }}
+          >
+            <div className={`w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 transform group-hover:rotate-6 shadow-lg group-hover:shadow-blue-500/25 animate-pulse-glow relative overflow-hidden animate-float-3d ${isHoveringLogo ? 'animate-hologram' : ''}`} style={{ animationDuration: '3s' }}>
               <svg className="w-7 h-7 text-white transition-transform duration-300 group-hover:scale-110 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
               </svg>
@@ -233,24 +327,23 @@ export function Header() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-slate-800/50 transition-all duration-300 relative group backdrop-blur-sm border border-slate-700/50"
-          >
-            <div className="relative w-6 h-6">
-              <span className={`absolute inset-0 transition-all duration-300 ${isMenuOpen ? 'opacity-0 rotate-90' : 'opacity-100 rotate-0'}`}>
-                <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </span>
-              <span className={`absolute inset-0 transition-all duration-300 ${isMenuOpen ? 'opacity-100 rotate-0' : 'opacity-0 -rotate-90'}`}>
-                <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </span>
-            </div>
-            <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-ping"></div>
-          </button>
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 rounded-lg hover:bg-slate-800/50 transition-all duration-300 relative group backdrop-blur-sm border border-slate-700/50">
+              <div className="relative w-6 h-6">
+                <span className={`absolute inset-0 transition-all duration-300 ${isMenuOpen ? 'opacity-0 rotate-90' : 'opacity-100 rotate-0'}`}>
+                  <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </span>
+                <span className={`absolute inset-0 transition-all duration-300 ${isMenuOpen ? 'opacity-100 rotate-0' : 'opacity-0 -rotate-90'}`}>
+                  <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </span>
+              </div>
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-ping"></div>
+              {/* Energy ring */}
+              <div className="absolute inset-0 border-2 border-blue-400/30 rounded-lg animate-energy-wave"></div>
+            </button>
         </div>
 
         {/* Mobile Menu */}
