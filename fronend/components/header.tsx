@@ -19,6 +19,9 @@ export function Header() {
   const [mouseTrail, setMouseTrail] = useState<Array<{x: number, y: number, id: number}>>([]);
   const [isHoveringLogo, setIsHoveringLogo] = useState(false);
   const [rippleEffect, setRippleEffect] = useState<Array<{x: number, y: number, id: number}>>([]);
+  const [quantumParticles, setQuantumParticles] = useState<Array<{x: number, y: number, vx: number, vy: number, id: number}>>([]);
+  const [neuralNetwork, setNeuralNetwork] = useState<Array<{x: number, y: number, connections: number[]}>>([]);
+  const [dataStream, setDataStream] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,6 +45,32 @@ export function Header() {
       setTime(new Date());
     }, 1000);
 
+    // Initialize quantum particles
+    const particles = Array.from({length: 25}, (_, i) => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 2,
+      vy: (Math.random() - 0.5) * 2,
+      id: i
+    }));
+    setQuantumParticles(particles);
+
+    // Initialize neural network nodes
+    const nodes = Array.from({length: 12}, (_, i) => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      connections: Array.from({length: 3}, () => Math.floor(Math.random() * 12))
+    }));
+    setNeuralNetwork(nodes);
+
+    // Data stream effect
+    const dataTimer = setInterval(() => {
+      setDataStream(prev => {
+        const chars = '01ABCDEF';
+        return (prev + chars[Math.floor(Math.random() * chars.length)]).slice(-50);
+      });
+    }, 100);
+
     setIsMounted(true);
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('mousemove', handleMouseMove);
@@ -49,6 +78,7 @@ export function Header() {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handleMouseMove);
       clearInterval(timer);
+      clearInterval(dataTimer);
     };
   }, []);
 
@@ -127,6 +157,26 @@ export function Header() {
           0% { transform: translateY(-100%); }
           100% { transform: translateY(100vh); }
         }
+        @keyframes quantum-flux {
+          0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.7; }
+          25% { transform: scale(1.2) rotate(90deg); opacity: 1; }
+          50% { transform: scale(0.8) rotate(180deg); opacity: 0.5; }
+          75% { transform: scale(1.1) rotate(270deg); opacity: 0.9; }
+        }
+        @keyframes neural-pulse {
+          0%, 100% { stroke-width: 1; opacity: 0.3; }
+          50% { stroke-width: 3; opacity: 0.8; }
+        }
+        @keyframes data-flow {
+          0% { transform: translateX(-100%); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateX(100%); opacity: 0; }
+        }
+        @keyframes cyber-grid {
+          0% { background-position: 0 0; }
+          100% { background-position: 50px 50px; }
+        }
         .animate-shimmer-fast {
           animation: shimmer-fast 0.8s ease-in-out;
         }
@@ -134,6 +184,16 @@ export function Header() {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ? 'bg-black/50 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'
       } relative overflow-hidden ${isMounted ? 'animate-slide-in-top' : ''}`} style={{ transform: `translateY(${parallaxOffset}px)` }}>
+      
+      {/* Cyber grid background */}
+      <div className="absolute inset-0 opacity-20" style={{
+        backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)`,
+        backgroundSize: '50px 50px',
+        animation: 'cyber-grid 2s linear infinite'
+      }}></div>
+      
+      {/* Advanced holographic overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-pink-600/10 opacity-30 animate-aurora" style={{ animationDuration: '8s' }}></div>
       
       {/* Scroll Progress Bar */}
       <div className="absolute top-0 left-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-300 z-50"
@@ -193,6 +253,68 @@ export function Header() {
             {Math.random().toString(2).substr(2, 8)}
           </div>
         ))}
+        {/* Quantum particles */}
+        {quantumParticles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute w-2 h-2 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full opacity-60 animate-quantum-flux"
+            style={{
+              left: particle.x,
+              top: particle.y,
+              animationDelay: `${particle.id * 0.1}s`,
+              animationDuration: `${2 + Math.random()}s`
+            }}
+          />
+        ))}
+        {/* Neural network connections */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30">
+          {neuralNetwork.map((node, i) => 
+            node.connections.map((connectionIndex) => {
+              const targetNode = neuralNetwork[connectionIndex];
+              if (!targetNode) return null;
+              return (
+                <line
+                  key={`${i}-${connectionIndex}`}
+                  x1={node.x}
+                  y1={node.y}
+                  x2={targetNode.x}
+                  y2={targetNode.y}
+                  stroke="url(#neuralGradient)"
+                  className="animate-neural-pulse"
+                  style={{
+                    animationDelay: `${(i + connectionIndex) * 0.2}s`,
+                    animationDuration: `${1.5 + Math.random()}s`
+                  }}
+                />
+              );
+            })
+          )}
+          <defs>
+            <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#3b82f6" />
+              <stop offset="100%" stopColor="#8b5cf6" />
+            </linearGradient>
+          </defs>
+          {neuralNetwork.map((node, i) => (
+            <circle
+              key={i}
+              cx={node.x}
+              cy={node.y}
+              r="3"
+              fill="url(#neuralGradient)"
+              className="animate-pulse"
+              style={{
+                animationDelay: `${i * 0.1}s`
+              }}
+            />
+          ))}
+        </svg>
+        {/* Data stream overlay */}
+        <div className="absolute bottom-4 left-4 right-4 h-8 bg-black/50 backdrop-blur-sm rounded-lg overflow-hidden border border-cyan-400/30">
+          <div className="text-xs font-mono text-cyan-400 p-2 animate-data-flow" style={{fontSize: '10px'}}>
+            {dataStream}
+          </div>
+        </div>
       </div>
       
       {/* Mouse Trail Effect */}
@@ -246,6 +368,10 @@ export function Header() {
             }}
           >
             <div className={`w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 transform group-hover:rotate-6 shadow-lg group-hover:shadow-blue-500/25 animate-pulse-glow relative overflow-hidden animate-float-3d ${isHoveringLogo ? 'animate-hologram' : ''}`} style={{ animationDuration: '3s' }}>
+              {/* Quantum field effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-blue-400/20 to-purple-400/20 rounded-2xl animate-quantum-flux" style={{ animationDuration: '1.5s' }}></div>
+              {/* Energy core */}
+              <div className="absolute inset-2 bg-gradient-to-br from-white/30 to-transparent rounded-xl animate-pulse"></div>
               <svg className="w-7 h-7 text-white transition-transform duration-300 group-hover:scale-110 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
               </svg>
@@ -322,6 +448,9 @@ export function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
                 <span className="absolute inset-0 bg-gradient-to-r from-white/30 via-white/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 animate-shimmer-fast"></span>
+                {/* Particle effects */}
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 animate-ping"></div>
+                <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-cyan-400 rounded-full opacity-0 group-hover:opacity-100 animate-ping" style={{animationDelay: '0.5s'}}></div>
               </Link>
             </Button>
           </div>
@@ -396,6 +525,17 @@ export function Header() {
         )}</div>
       </div>
     </header>
+    
+    {/* Futuristic content spacer with holographic effects */}
+    <div className="h-20 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-pink-600/5 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer-fast" style={{animationDuration: '3s'}}></div>
+      {/* Binary code running along the bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400/20 via-cyan-400/20 to-blue-400/20 overflow-hidden">
+        <div className="text-xs font-mono text-green-400/40 whitespace-nowrap animate-data-flow" style={{fontSize: '8px', lineHeight: '4px'}}>
+          01101000 01100101 01101100 01101100 01101111 00100000 01110111 01101111 01110010 01101100 01100100 00100000 01110011 01101000 01101111 01110010 01110100 01101100 01101001 01101110 01101011
+        </div>
+      </div>
+    </div>
     
     {/* Spacer to prevent content from being hidden behind fixed header */}
     <div className="h-20 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-pink-600/5"></div>
