@@ -68,19 +68,16 @@ export function Header() {
       setDataStream(prev => {
         const chars = '01ABCDEF';
         return (prev + chars[Math.floor(Math.random() * chars.length)]).slice(-50);
-      });
-    }, 100);
+        });
+      }, 100);
 
-    setIsMounted(true);
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
-      clearInterval(timer);
-      clearInterval(dataTimer);
-    };
-  }, []);
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('mousemove', handleMouseMove);
+        clearInterval(timeInterval);
+        clearInterval(dataStreamInterval);
+      };
+  }, [isMounted]);
 
   const navItems = [
     { href: "#features", label: "Features" },
@@ -91,27 +88,18 @@ export function Header() {
 
   return (
     <>
-      <style jsx>{`
+      <style jsx global>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(-15px) rotate(180deg); }
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
         }
         @keyframes pulse-glow {
           0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
           50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6), 0 0 40px rgba(147, 51, 234, 0.4); }
         }
-        .animate-pulse-glow {
-          animation: pulse-glow 2s ease-in-out infinite;
-        }
         @keyframes slide-in-top {
           0% { transform: translateY(-100%); opacity: 0; }
           100% { transform: translateY(0); opacity: 1; }
-        }
-        .animate-slide-in-top {
-          animation: slide-in-top 0.6s ease-out;
         }
         @keyframes shimmer-fast {
           0% { transform: translateX(-100%) skewX(-15deg); }
@@ -177,8 +165,56 @@ export function Header() {
           0% { background-position: 0 0; }
           100% { background-position: 50px 50px; }
         }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+        .animate-pulse-glow {
+          animation: pulse-glow 2s ease-in-out infinite;
+        }
+        .animate-slide-in-top {
+          animation: slide-in-top 0.6s ease-out;
+        }
         .animate-shimmer-fast {
           animation: shimmer-fast 0.8s ease-in-out;
+        }
+        .animate-aurora {
+          animation: aurora 8s ease-in-out infinite;
+        }
+        .animate-morph {
+          animation: morph 8s ease-in-out infinite;
+        }
+        .animate-float-3d {
+          animation: float-3d 3s ease-in-out infinite;
+        }
+        .animate-glow-pulse {
+          animation: glow-pulse 2s ease-in-out infinite;
+        }
+        .animate-trail {
+          animation: trail 1s ease-out forwards;
+        }
+        .animate-ripple {
+          animation: ripple 1s ease-out forwards;
+        }
+        .animate-hologram {
+          animation: hologram 2s linear infinite;
+        }
+        .animate-energy-wave {
+          animation: energy-wave 2s linear infinite;
+        }
+        .animate-matrix {
+          animation: matrix 3s linear infinite;
+        }
+        .animate-quantum-flux {
+          animation: quantum-flux 1.5s ease-in-out infinite;
+        }
+        .animate-neural-pulse {
+          animation: neural-pulse 1.5s ease-in-out infinite;
+        }
+        .animate-data-flow {
+          animation: data-flow 2s linear infinite;
+        }
+        .animate-cyber-grid {
+          animation: cyber-grid 2s linear infinite;
         }
       `}</style>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -268,6 +304,12 @@ export function Header() {
         ))}
         {/* Neural network connections */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30">
+          <defs>
+            <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#3b82f6" />
+              <stop offset="100%" stopColor="#8b5cf6" />
+            </linearGradient>
+          </defs>
           {neuralNetwork.map((node, i) => 
             node.connections.map((connectionIndex) => {
               const targetNode = neuralNetwork[connectionIndex];
@@ -289,12 +331,6 @@ export function Header() {
               );
             })
           )}
-          <defs>
-            <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3b82f6" />
-              <stop offset="100%" stopColor="#8b5cf6" />
-            </linearGradient>
-          </defs>
           {neuralNetwork.map((node, i) => (
             <circle
               key={i}
@@ -539,5 +575,6 @@ export function Header() {
     
     {/* Spacer to prevent content from being hidden behind fixed header */}
     <div className="h-20 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-pink-600/5"></div>
-  </>;
+    </>
+  );
 }
